@@ -1,0 +1,18 @@
+{
+  "name": "password-strength-checker",
+  "version": "1.0.0",
+  "description": "One-Page Website to check password strength instantly",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "build": "echo 'No build step needed - static HTML/CSS/JS'",
+    "start": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "password-strength",
+    "password-security",
+    "password-checker"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {}
+}

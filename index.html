@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Password Strength Checker | Test Your Password Security Instantly</title>
+    <meta name="description" content="Check your password strength instantly. Get real-time feedback on password security and learn how to create stronger passwords.">
+    <meta name="keywords" content="password strength checker, password security, test password, password analyzer">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Password Strength Checker | Test Your Password Security Instantly">
+    <meta property="og:description" content="Check your password strength instantly with real-time security feedback.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://password-strength-checker.vercel.app/">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Password Strength Checker">
+    <meta name="twitter:description" content="Check your password strength instantly with real-time security feedback.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://password-strength-checker.vercel.app/">
+    
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent: #3b82f6;
+            --strength-weak: #ef4444;
+            --strength-fair: #f59e0b;
+            --strength-good: #10b981;
+            --strength-strong: #3b82f6;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .checker-container {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .password-input-wrapper input {
+            flex: 1;
+            padding: 0.75rem 3rem 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .password-input-wrapper input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .toggle-visibility {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-visibility:hover {
+            color: var(--text-primary);
+        }
+
+        .strength-meter {
+            margin-top: 1rem;
+        }
+
+        .strength-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .strength-text {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .score-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .score-item.missing {
+            color: var(--text-secondary);
+        }
+
+        .score-item.present {
+            color: var(--strength-good);
+            font-weight: 500;
+        }
+
+        .score-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .score-item.missing .score-icon {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+        }
+
+        .score-item.present .score-icon {
+            background: var(--strength-good);
+            color: white;
+        }
+
+        .tips-box {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tips-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .tips-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .tips-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .tips-list li::before {
+            content: "✓";
+            color: var(--strength-good);
+            font-weight: 700;
+        }
+
+        .privacy-notice {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 1.5rem;
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Password Strength Checker</h1>
+            <p class="subtitle">Test your password security instantly</p>
+        </header>
+
+        <main>
+            <div class="checker-container">
+                <div class="input-group">
+                    <label class="input-label" for="password">Enter Your Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="password" placeholder="Type your password here" autocomplete="off">
+                        <button type="button" class="toggle-visibility" id="toggle-visibility">👁️</button>
+                    </div>
+                </div>
+
+                <div class="strength-meter">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strength-fill"></div>
+                    </div>
+                    <div class="strength-text" id="strength-text">Enter a password to check</div>
+                </div>
+
+                <div class="score-details" id="score-details" style="display: none;">
+                    <div class="score-item missing" id="check-length">
+                        <span class="score-icon">✗</span>
+                        <span>8+ characters</span>
+                    </div>
+                    <div class="score-item missing" id="check-lowercase">
+                        <span class="score-icon">✗</span>
+                        <span>Lowercase</span>
+                    </div>
+                    <div class="score-item missing" id="check-uppercase">
+                        <span class="score-icon">✗</span>
+                        <span>Uppercase</span>
+                    </div>
+                    <div class="score-item missing" id="check-number">
+                        <span class="score-icon">✗</span>
+                        <span>Number</span>
+                    </div>
+                    <div class="score-item missing" id="check-special">
+                        <span class="score-icon">✗</span>
+                        <span>Special char</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tips-box">
+                <div class="tips-title">💡 Tips for Strong Passwords</div>
+                <ul class="tips-list">
+                    <li>Use at least 12-16 characters</li>
+                    <li>Mix uppercase, lowercase, numbers, and symbols</li>
+                    <li>Avoid personal information (birthdays, names)</li>
+                    <li>Don't reuse passwords across sites</li>
+                    <li>Use a password manager to generate unique passwords</li>
+                </ul>
+            </div>
+
+            <div class="privacy-notice">
+                🔒 Your password is analyzed locally in your browser. Nothing is sent to any server.
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>Real-time analysis • Private & Secure • No registration required</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
